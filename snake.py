@@ -1,6 +1,7 @@
 import tkinter as tk  # Importiamo la libreria tkinter per creare la GUI
 from random import randint  # Importiamo randint per generare posizioni casuali
 from PIL import Image, ImageTk  # Importiamo Image e ImageTk per caricare immagini
+import pygame  # Aggiungiamo pygame per la gestione dell'audio
 
 # Classe principale per il gioco Snake
 class SnakeGame:
@@ -8,6 +9,12 @@ class SnakeGame:
         # Configurazione della finestra principale
         self.root = root
         self.root.title("Snake Game")  # Titolo della finestra
+        
+        # Inizializza pygame per gestire l'audio
+        pygame.mixer.init()
+
+        # Carica l'effetto sonoro (modifica con il path del tuo file audio)
+        self.eat_sound = pygame.mixer.Sound("music/mouse_s.wav")  # Sostituisci con il percorso del file audio
         
         # Carica l'immagine di sfondo
         self.background_image = Image.open("img/grass.jpg")  # Sostituisci con il path dell'immagine
@@ -51,10 +58,10 @@ class SnakeGame:
 
         # Disegniamo il cibo sulla canvas con l'immagine
         self.food_item = self.canvas.create_image(
-        self.food[1]*10, self.food[0]*10,  # Coordinate x e y
-        anchor="nw",  # L'ancoraggio in alto a sinistra
-        image=self.food_photo  # L'immagine del cibo
-)
+            self.food[1]*10, self.food[0]*10,  # Coordinate x e y
+            anchor="nw",  # L'ancoraggio in alto a sinistra
+            image=self.food_photo  # L'immagine del cibo
+        )
 
         # Mostriamo il punteggio iniziale sulla canvas
         self.score_text = self.canvas.create_text(
@@ -68,6 +75,9 @@ class SnakeGame:
         self.root.bind("<Down>", lambda event: self.change_direction("Down"))
         self.root.bind("<Left>", lambda event: self.change_direction("Left"))
         self.root.bind("<Right>", lambda event: self.change_direction("Right"))
+
+        # Aggiungere il tasto per riavviare il gioco
+        self.root.bind("r", self.restart_game)
 
         # Avvia il ciclo di aggiornamento del gioco
         self.update_game()
@@ -132,6 +142,9 @@ class SnakeGame:
             # Genera una nuova posizione casuale per il cibo
             self.food = [randint(1, 29), randint(1, 59)]
             
+             # Riproduci il suono quando il serpente mangia il cibo
+            self.eat_sound.play()  # Suona l'effetto sonoro
+            
             # Usa solo 2 coordinate per l'immagine del cibo
             self.canvas.coords(self.food_item, self.food[1] * 10, self.food[0] * 10)  # x, y
         else:
@@ -141,6 +154,43 @@ class SnakeGame:
 
         # Richiama questa funzione ogni 100 ms per continuare il ciclo del gioco
         self.root.after(100, self.update_game)
+
+    def restart_game(self, event=None):
+        """
+        Resetta il gioco per farlo ripartire.
+        """
+        # Cancella tutti gli oggetti dalla canvas
+        self.canvas.delete("all")
+        
+        # Re-inizializza lo stato del gioco
+        self.snake = [[15, 13], [15, 12], [15, 11]]
+        self.food = [randint(1, 29), randint(1, 59)]
+        self.direction = "Right"
+        self.running = True
+        self.points = 0
+        
+        # Ripristina lo sfondo e il punteggio
+        self.canvas.create_image(0, 0, anchor="nw", image=self.background_photo)
+        self.score_text = self.canvas.create_text(
+            30, 10, fill="white", text=f"Score: {self.points}"
+        )
+        
+        # Ricrea il serpente e il cibo
+        self.snake_parts = []
+        for segment in self.snake:
+            self.snake_parts.append(
+                self.canvas.create_image(
+                    segment[1]*10, segment[0]*10, anchor="nw", image=self.snake_photo
+                )
+            )
+
+        self.food_item = self.canvas.create_image(
+            self.food[1]*10, self.food[0]*10, anchor="nw", image=self.food_photo
+        )
+
+        # Avvia di nuovo il ciclo di gioco
+        self.update_game()
+
 
 # Creazione della finestra principale e avvio del gioco
 root = tk.Tk()  # Finestra principale di tkinter
