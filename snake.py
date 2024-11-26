@@ -15,6 +15,8 @@ class SnakeGame:
 
         # Carica l'effetto sonoro (modifica con il path del tuo file audio)
         self.eat_sound = pygame.mixer.Sound("music/mouse_s.wav")  # Sostituisci con il percorso del file audio
+        self.main_theme = pygame.mixer.Sound("music/main_theme.wav")  # Sostituisci con il percorso del file audio
+        self.main_theme.play(-1)
         
         # Carica l'immagine di sfondo
         self.background_image = Image.open("img/grass.jpg")  # Sostituisci con il path dell'immagine
