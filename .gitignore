@@ -1,0 +1,28 @@
+# Ambiente virtuale
+venv/
+myenv/
+
+# File Python compilati
+*.pyc
+*.pyo
+__pycache__/
+
+# Configurazioni di IDE/editor
+.vscode/
+.idea/
+*.swp
+
+# File di log
+*.log
+
+# File di test coverage
+htmlcov/
+*.cover
+*.coverage
+*.coveragerc
+
+# File di pacchetti
+*.egg
+*.egg-info/
+dist/
+build/
