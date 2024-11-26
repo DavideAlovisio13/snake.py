@@ -1,5 +1,6 @@
 import tkinter as tk  # Importiamo la libreria tkinter per creare la GUI
 from random import randint  # Importiamo randint per generare posizioni casuali
+from PIL import Image, ImageTk  # Importiamo Image e ImageTk per caricare immagini
 
 # Classe principale per il gioco Snake
 class SnakeGame:
@@ -7,10 +8,19 @@ class SnakeGame:
         # Configurazione della finestra principale
         self.root = root
         self.root.title("Snake Game")  # Titolo della finestra
+        
+        # Carica l'immagine di sfondo
+        self.background_image = Image.open("img/grass.jpg")  # Sostituisci con il path dell'immagine
+        self.background_image = self.background_image.resize((600, 300))  # Ridimensiona l'immagine a 600x300
+        self.background_photo = ImageTk.PhotoImage(self.background_image)
 
         # Canvas (area di gioco): 600x300 pixel, sfondo nero
         self.canvas = tk.Canvas(root, width=600, height=300, bg="black")
         self.canvas.pack()
+        
+         # Aggiungi l'immagine come sfondo
+        self.canvas.create_image(0, 0, anchor="nw", image=self.background_photo)
+
 
         # Stato iniziale del gioco
         self.snake = [[15, 13], [15, 12], [15, 11]]  # Coordinate iniziali del serpente
